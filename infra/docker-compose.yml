@@ -9,7 +9,7 @@ services:
       - ./.env
 
   backend:
-    image: admoskalev/backend_foodgram
+    image: # ещё предстоит сделать
     restart: always
     volumes:
       - static_value:/code/static/
@@ -21,7 +21,7 @@ services:
       - ./.env
 
   frontend:
-    image: admoskalev/frontend_foodgram
+    image: # ещё предстоит сделать
     volumes:
       - ../frontend/:/app/result_build/
   nginx:
