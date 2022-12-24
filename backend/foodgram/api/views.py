@@ -27,14 +27,14 @@ from .serializers import (FavoriteSerializers, FollowUserSerializers,
 
 class CustomUserViewSet(UserViewSet):
     """
-    Redefining UserViewSetb added new endpoints for subscriptions:
-    1. Subscribe
-    2. Delete the subscription
-    3. List of subscriptions
-    Pagination:
-    Page - page (by default 6 objects per page)
-    Limit - limit on the output of objects per page
-    Recipes_limit - the number of recipes the author has
+    Переопределение UserViewSet добавление новых эндпоинтов для подписок.
+    1- Подписаться;
+    2- Удалить подпису;
+    3- Список подписок.
+    Пагинация:
+    Page- страница (6 обънктов на страницу по умолчанию);
+    Limit- ограничение на вывод объектов на одну страницу;
+    Recipes_limit- количество рецептов у автора.
     """
     pagination_class = LimitPagePagination
 
@@ -79,7 +79,7 @@ class CustomUserViewSet(UserViewSet):
 
 class TagViewSet(ListRetrieveCustomViewSet):
     """
-    ViewSet for TagSerializers only GET requests.
+    ViewSet для TagSerializers только GET запросы.
     """
     queryset = Tag.objects.all()
     serializer_class = TagSerializers
@@ -88,8 +88,8 @@ class TagViewSet(ListRetrieveCustomViewSet):
 
 class IngredientViewSet(ListRetrieveCustomViewSet):
     """
-    ViewSet for IngredientSerializers only GET requests.
-    Filter by ingredient name.
+    ViewSet для IngredientSerializers только GET запросы.
+    Фильтр по названиям ингридиентов.
     """
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializers
@@ -100,10 +100,10 @@ class IngredientViewSet(ListRetrieveCustomViewSet):
 
 class RecipeViewSet(CustomRecipeModelViewSet):
     """
-    Receptviews with additional methods:
-    1. Add/Remove from favorites
-    2. Add/remove from the shopping list
-    3. Get a shopping list in PDF format
+    Receptviews с дополнительными методами:
+    1- Добавить/удалить из избранного;
+    2- Добавить/удалить из списка покупок;
+    3- Получите список покупок в формате PDF.
     """
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializers
