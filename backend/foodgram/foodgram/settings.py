@@ -2,12 +2,15 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+from dotenv import load_dotenv
 
-SECRET_KEY = '*=e6qwfa)ak%*r5(_g69twj703e&z(5ym_5d30ere&lam8_%em'
+load_dotenv()
+
+SECRET_KEY = os.getenv(key='SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -67,8 +70,7 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT')
     }
-}
-
+} 
 
 AUTH_PASSWORD_VALIDATORS = [
     {
