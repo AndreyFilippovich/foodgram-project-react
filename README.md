@@ -45,3 +45,5 @@
 >SSH_KEY=<ваш SSH ключ (для получения команда: cat ~/.ssh/id_rsa)>(Копировать полностью)
 
 ## Проект доступен по [адресу](http://158.160.0.157/)
+
+## Проект выполнил [Andrey Filippovich](https://github.com/AndreyFilippovich)
