@@ -21,7 +21,7 @@ class Tag(models.Model):
         verbose_name = _('Тег')
         verbose_name_plural = _('Теги')
 
-
+ 
 class Ingredient(models.Model):
     """
     Модель ингредиентов.

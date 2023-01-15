@@ -30,19 +30,19 @@
 >scp /mnt/c/<Путь к проекту>/infra/docker-compose.yaml  <login>@<IP>:/home/<Имя>
 #### Добавьте в Secrets GitHub переменные окружения:
 
->DB_ENGINE = "django.db.backends.postgresql"
->DB_NAME = "имя базы данных postgres"
->DB_USER = "пользователь бд"
->DB_PASSWORD = "пароль"
->DB_HOST = "db"
->DB_PORT = "5432"
->DOCKER_PASSWORD=<пароль от DockerHub>
->DOCKER_USERNAME=<имя пользователя>
->DJANGO_SK=<секретный ключ проекта django>
->USER=<username для подключения к серверу>
->HOST=<IP сервера>
->PASSPHRASE=<пароль для сервера, если он установлен>
->SSH_KEY=<ваш SSH ключ (для получения команда: cat ~/.ssh/id_rsa)>(Копировать полностью)
+> DB_ENGINE = "django.db.backends.postgresql"
+> DB_NAME = "имя базы данных postgres"
+> DB_USER = "пользователь бд"
+> DB_PASSWORD = "пароль"
+> DB_HOST = "db"
+> DB_PORT = "5432"
+> DOCKER_PASSWORD=<пароль от DockerHub>
+> DOCKER_USERNAME=<имя пользователя>
+> DJANGO_SK=<секретный ключ проекта django>
+> USER=<username для подключения к серверу>
+> HOST=<IP сервера>
+> PASSPHRASE=<пароль для сервера, если он установлен>
+> SSH_KEY=<ваш SSH ключ (для получения команда: cat ~/.ssh/id_rsa)>(Копировать полностью)
 
 ## Проект доступен по [адресу](http://158.160.0.157/)
 
