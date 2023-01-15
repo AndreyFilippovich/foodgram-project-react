@@ -1,8 +1,5 @@
 import io
 
-from django.http import HttpResponse
-from reportlab.pdfgen import canvas
-
 from django.db.models import Sum
 from django.http import FileResponse
 from django.utils.translation import gettext as _
@@ -10,7 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCart, Tag)
-from reportlab.pdfbase import pdfmetrics, ttfonts
+from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen.canvas import Canvas
 from rest_framework import permissions, status
@@ -127,39 +124,49 @@ class RecipeViewSet(CustomRecipeModelViewSet):
             return self.del_obj(model=Favorite, pk=pk, user=request.user)
         return None
 
-    @action(methods=['POST', 'DELETE'], detail=True)
-    def shopping_cart(self, request, pk):
-        return self.action_post_delete(pk, ShoppingCardSerializers)
+    @action(detail=True, methods=['post', 'delete'],
+            permission_classes=[permissions.IsAuthenticated])
+    def shopping_cart(self, request, pk=None):
+        if request.method == 'POST':
+            return self.add_obj(model=ShoppingCart,
+                                pk=pk,
+                                serializers=ShoppingCardSerializers,
+                                user=request.user)
+        if request.method == 'DELETE':
+            return self.del_obj(model=ShoppingCart, pk=pk, user=request.user)
+        return Response(_('Разрешены только POST и DELETE запросы'),
+                        status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    @action(detail=False)
+    @action(detail=False, permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request):
-        response = HttpResponse(content_type='application/pdf', )
-        response['Content-Disposition'] = (
-            "attachment; filename='shopping_cart.pdf'"
-        )
-        p = canvas.Canvas(response)
-        arial = ttfonts.TTFont('Arial', 'data/arial.ttf')
-        pdfmetrics.registerFont(arial)
-        p.setFont('Arial', 14)
-
+        user = request.user
         ingredients = IngredientRecipe.objects.filter(
-            recipe__shopping_cart__user=request.user).values_list(
-            'ingredient__name', 'amount', 'ingredient__measurement_unit')
-
-        ingr_list = {}
-        for name, amount, unit in ingredients:
-            if name not in ingr_list:
-                ingr_list[name] = {'amount': amount, 'unit': unit}
-            else:
-                ingr_list[name]['amount'] += amount
-        height = 700
-
-        p.drawString(100, 750, 'Список покупок')
-        for i, (name, data) in enumerate(ingr_list.items(), start=1):
-            p.drawString(
-                80, height,
-                f"{i}. {name} – {data['amount']} {data['unit']}")
+            recipe__shopping_carts__user=user).values(
+                'ingredient__name',
+                'ingredient__measurement_unit').order_by(
+                    'ingredient__name').annotate(amount=Sum('amount'))
+        buffer = io.BytesIO()
+        canvas = Canvas(buffer)
+        pdfmetrics.registerFont(
+            TTFont('Country', 'Country.ttf', 'UTF-8'))
+        canvas.setFont('Country', size=36)
+        canvas.drawString(70, 800, _('Продуктовый помощник'))
+        canvas.drawString(70, 760, _('список покупок:'))
+        canvas.setFont('Country', size=18)
+        canvas.drawString(70, 700, _('Ингредиенты:'))
+        canvas.setFont('Country', size=16)
+        canvas.drawString(70, 670, _('Название:'))
+        canvas.drawString(220, 670, _('Количество:'))
+        canvas.drawString(350, 670, _('Единица измерения:'))
+        height = 630
+        for ingredient in ingredients:
+            canvas.drawString(70, height, f"{ingredient['ingredient__name']}")
+            canvas.drawString(250, height,
+                              f"{ingredient['amount']}")
+            canvas.drawString(380, height,
+                              f"{ingredient['ingredient__measurement_unit']}")
             height -= 25
-        p.showPage()
-        p.save()
-        return response
+        canvas.save()
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True,
+                            filename='Shoppinglist.pdf')
