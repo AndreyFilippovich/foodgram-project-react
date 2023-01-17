@@ -24,7 +24,6 @@ from .serializers import (FavoriteSerializers, FollowUserSerializers,
                           IngredientSerializers, RecipeSerializers,
                           ShoppingCardSerializers, TagSerializers)
 
-
 class CustomUserViewSet(UserViewSet):
     """
     Переопределение UserViewSet добавление новых эндпоинтов для подписок.
@@ -76,7 +75,6 @@ class CustomUserViewSet(UserViewSet):
         Follow.objects.get(user=user, author=author).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
 class TagViewSet(ListRetrieveCustomViewSet):
     """
     ViewSet для TagSerializers только GET запросы.
@@ -96,7 +94,6 @@ class IngredientViewSet(ListRetrieveCustomViewSet):
     permission_classes = (permissions.AllowAny,)
     filter_backends = (IngredientSearchFilter,)
     search_fields = ('name',)
-
 
 class RecipeViewSet(CustomRecipeModelViewSet):
     """
@@ -123,6 +120,7 @@ class RecipeViewSet(CustomRecipeModelViewSet):
         elif request.method == 'DELETE':
             return self.del_obj(model=Favorite, pk=pk, user=request.user)
         return None
+
 
     @action(detail=True, methods=['post', 'delete'],
             permission_classes=[permissions.IsAuthenticated])
@@ -170,3 +168,4 @@ class RecipeViewSet(CustomRecipeModelViewSet):
         buffer.seek(0)
         return FileResponse(buffer, as_attachment=True,
                             filename='Shoppinglist.pdf')
+
